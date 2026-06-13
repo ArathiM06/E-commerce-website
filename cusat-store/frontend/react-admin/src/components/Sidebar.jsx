@@ -20,7 +20,9 @@ function Sidebar({ setCurrentPage }) {
           Orders
         </li>
 
-        <li>Users</li>
+        <li onClick={() => setCurrentPage("users")}>
+   Users
+</li>
         <li>Settings</li>
       </ul>
     </div>
