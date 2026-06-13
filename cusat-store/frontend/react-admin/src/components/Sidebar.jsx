@@ -1,4 +1,4 @@
-function Sidebar() {
+function Sidebar({ setCurrentPage }) {
   return (
     <div
       style={{
@@ -12,10 +12,16 @@ function Sidebar() {
       <h2>CUSAT Store</h2>
 
       <ul style={{ listStyle: "none", padding: 0 }}>
-        <li>📦 Products</li>
-        <li>🛒 Orders</li>
-        <li>👥 Users</li>
-        <li>⚙️ Settings</li>
+        <li onClick={() => setCurrentPage("products")}>
+           Products
+        </li>
+
+        <li onClick={() => setCurrentPage("orders")}>
+          Orders
+        </li>
+
+        <li>Users</li>
+        <li>Settings</li>
       </ul>
     </div>
   );

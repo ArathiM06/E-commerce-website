@@ -1,13 +1,18 @@
+import { useState } from "react";
 import Sidebar from "./components/Sidebar";
+import Products from "./pages/Products";
+import Orders from "./pages/Orders";
 
 function App() {
+  const [currentPage, setCurrentPage] = useState("products");
+
   return (
     <div style={{ display: "flex" }}>
-      <Sidebar />
+      <Sidebar setCurrentPage={setCurrentPage} />
 
       <div style={{ padding: "20px" }}>
-        <h1>CUSAT Store Admin Dashboard</h1>
-        <p>Manage products and orders</p>
+        {currentPage === "products" && <Products />}
+        {currentPage === "orders" && <Orders />}
       </div>
     </div>
   );
