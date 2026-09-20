@@ -73,28 +73,28 @@ $categories = array('All', 'Apparel', 'Textbooks', 'Tech', 'Stationery');
     </div>
 
     <div id="store-section" class="store-filter-bar">
-        <table width="100%" border="0">
-            <tr>
-                <td>
-                    <b>Categories:</b> &nbsp;
-                    <?php foreach ($categories as $cat) { ?>
-                        <a href="index.php?category=<?php echo urlencode($cat); ?>&search=<?php echo urlencode($search_query); ?>#store-section" 
-                           class="category-link-btn <?php if($selected_category == $cat) { echo 'active-cat'; } ?>">
-                            <?php echo $cat; ?>
-                        </a>
-                    <?php } ?>
-                </td>
-                
-                <td align="right">
-                    <form method="GET" action="index.php#store-section" class="search-form-inline">
-                        <input type="hidden" name="category" value="<?php echo htmlspecialchars($selected_category); ?>">
-                        <b>Find Item:</b> 
-                        <input type="text" name="search" placeholder="Type here to search..." value="<?php echo htmlspecialchars($search_query); ?>" class="search-input-field">
-                        <input type="submit" value="Search" class="search-submit-btn">
-                    </form>
-                </td>
-            </tr>
-        </table>
+        <div class="filter-categories-group">
+            <span class="filter-label">Categories:</span>
+            <div class="filter-buttons-list">
+                <?php foreach ($categories as $cat) { ?>
+                    <a href="index.php?category=<?php echo urlencode($cat); ?>&search=<?php echo urlencode($search_query); ?>#store-section" 
+                       class="category-link-btn <?php if($selected_category == $cat) { echo 'active-cat'; } ?>">
+                        <?php echo $cat; ?>
+                    </a>
+                <?php } ?>
+            </div>
+        </div>
+        
+        <div class="filter-search-group">
+            <form method="GET" action="index.php#store-section" class="search-form-inline">
+                <input type="hidden" name="category" value="<?php echo htmlspecialchars($selected_category); ?>">
+                <span class="filter-label">Find Item:</span> 
+                <div class="search-input-wrapper">
+                    <input type="text" name="search" placeholder="Type here to search..." value="<?php echo htmlspecialchars($search_query); ?>" class="search-input-field">
+                    <button type="submit" class="search-submit-btn">Search</button>
+                </div>
+            </form>
+        </div>
     </div>
     <br><br>
 
@@ -122,57 +122,30 @@ $categories = array('All', 'Apparel', 'Textbooks', 'Tech', 'Stationery');
 
         <?php } else { ?>
             
-            <div class="products-container">
-                
-                <table width="100%" border="0" cellpadding="10" cellspacing="15">
-                    <?php 
-                    $counter = 0;
-                    foreach ($products as $prod) { 
-                        // rows split every 3 items
-                        if ($counter % 3 == 0) {
-                            if ($counter > 0) { echo "</tr>"; }
-                            echo "<tr>";
-                        }
-                    ?>
+            <div class="products-grid">
+                <?php foreach ($products as $prod) { ?>
+                    <div class="product-card">
+                        <div class="product-image-box">
+                            <span class="product-card-category-badge">
+                                <?php echo htmlspecialchars($prod['category']); ?>
+                            </span>
+                            <img src="<?php echo htmlspecialchars($prod['image_url']); ?>" alt="<?php echo htmlspecialchars($prod['name']); ?>" class="catalog-product-img">
+                        </div>
                         
-                        <td width="33%" valign="top" class="product-card-cell">
-                            
-                            <div class="product-image-box">
-                                <span class="product-card-category-badge">
-                                    <?php echo htmlspecialchars($prod['category']); ?>
-                                </span>
-                                <img src="<?php echo htmlspecialchars($prod['image_url']); ?>" alt="img" class="catalog-product-img">
-                            </div>
-                            
-                            <br>
+                        <div class="product-info-box">
                             <h3 class="catalog-product-title"><?php echo htmlspecialchars($prod['name']); ?></h3>
                             <p class="catalog-product-desc"><?php echo htmlspecialchars($prod['description']); ?></p>
-                            
-                            <hr class="product-card-divider">
-                            
-                            <table width="100%">
-                                <tr>
-                                    <td>
-                                        <b class="catalog-product-price">₹<?php echo number_format(floatval($prod['price'] ?? 0), 2); ?></b>
-                                    </td>
-                                    <td align="right">
-                                        <button onclick="addToCart(<?php echo $prod['id']; ?>, '<?php echo addslashes($prod['name']); ?>', <?php echo $prod['price']; ?>, '<?php echo addslashes($prod['image_url']); ?>')" 
-                                                class="add-to-cart-action-btn">
-                                            Add to Cart 🛒
-                                        </button>
-                                    </td>
-                                </tr>
-                            </table>
-
-                        </td>
-
-                    <?php 
-                        $counter++;
-                    } 
-                    if ($counter > 0) { echo "</tr>"; }
-                    ?>
-                </table>
-
+                        </div>
+                        
+                        <div class="product-card-footer">
+                            <b class="catalog-product-price">₹<?php echo number_format(floatval($prod['price'] ?? 0), 2); ?></b>
+                            <button onclick="addToCart(<?php echo $prod['id']; ?>, '<?php echo addslashes($prod['name']); ?>', <?php echo $prod['price']; ?>, '<?php echo addslashes($prod['image_url']); ?>')" 
+                                    class="add-to-cart-action-btn">
+                                Add to Cart 🛒
+                            </button>
+                        </div>
+                    </div>
+                <?php } ?>
             </div>
 
         <?php } ?>

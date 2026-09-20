@@ -131,10 +131,10 @@ function clearCart() {
     updateCartBadge();
 }
 
-// updates the number on basket
+// updates the number on basket (supports both desktop and mobile badges)
 function updateCartBadge() {
-    const badge = document.getElementById('cart-badge');
-    if (!badge) return;
+    const badges = document.querySelectorAll('.cart-badge-target, #cart-badge, #mobile-cart-badge');
+    if (!badges || badges.length === 0) return;
 
     const cart = getCart();
     let totalCount = 0;
@@ -143,13 +143,39 @@ function updateCartBadge() {
         totalCount = totalCount + cart[i].quantity;
     }
 
-    if (totalCount > 0) {
-        badge.textContent = totalCount;
-        badge.style.display = 'inline-block';
-    } else {
-        badge.style.display = 'none';
-    }
+    badges.forEach(badge => {
+        if (totalCount > 0) {
+            badge.textContent = totalCount;
+            badge.style.display = 'inline-block';
+        } else {
+            badge.style.display = 'none';
+        }
+    });
 }
+
+// Mobile navigation menu toggle
+function toggleMobileMenu() {
+    const toggleBtn = document.getElementById('mobile-menu-toggle');
+    const navWrapper = document.getElementById('nav-wrapper');
+    if (!toggleBtn || !navWrapper) return;
+    
+    toggleBtn.classList.toggle('active');
+    navWrapper.classList.toggle('show-mobile');
+}
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', function(event) {
+    const toggleBtn = document.getElementById('mobile-menu-toggle');
+    const navWrapper = document.getElementById('nav-wrapper');
+    if (!toggleBtn || !navWrapper) return;
+    
+    if (navWrapper.classList.contains('show-mobile')) {
+        if (!navWrapper.contains(event.target) && !toggleBtn.contains(event.target)) {
+            toggleBtn.classList.remove('active');
+            navWrapper.classList.remove('show-mobile');
+        }
+    }
+});
 
 // builds the cart page contents dynamically
 function renderCartPage() {
