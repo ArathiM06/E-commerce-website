@@ -1,9 +1,14 @@
 <?php
-include 'header.php';
+require_once __DIR__ . '/config.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+ob_start();
 
 // redirect home if the user is already logged in
-if ($is_logged_in == true) {
+if (isset($_SESSION['user'])) {
     header("Location: index.php");
+    echo '<script>window.location.href="index.php";</script>';
     exit();
 }
 
@@ -28,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
                 'method'  => 'POST',
                 'content' => http_build_query($login_data),
-                'timeout' => 3.0,
+                'timeout' => 5.0,
                 'ignore_errors' => true
             )
         );
@@ -61,12 +66,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // kick user back to store catalog homepage
             header("Location: index.php");
+            echo '<script>window.location.href="index.php";</script>';
             exit();
         }
     } catch (Exception $e) {
         $error_msg = "Connection error. Is FastAPI running?";
     }
 }
+
+include 'header.php';
 ?>
 
 <!-- main login box section -->

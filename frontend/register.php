@@ -1,9 +1,14 @@
 <?php
-include 'header.php';
+require_once __DIR__ . '/config.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+ob_start();
 
 // redirect home if already logged in
-if ($is_logged_in == true) {
+if (isset($_SESSION['user'])) {
     header("Location: index.php");
+    echo '<script>window.location.href="index.php";</script>';
     exit();
 }
 
@@ -56,6 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $error_msg = "Connection error. Is FastAPI running?";
     }
 }
+
+include 'header.php';
 ?>
 
 <!-- main registration form layout wrapper -->
