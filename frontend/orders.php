@@ -11,7 +11,7 @@ $orders = array();
 $error_msg = null;
 
 // STEP 2: SET UP THE URL LINK TO GRAB USER ORDERS
-$api_url = "http://localhost:8000/api/orders/user/" . urlencode($user_id);
+$api_url = $API_BASE_URL . "/orders/user/" . urlencode($user_id);
 
 try {
     $ctx = stream_context_create(array(

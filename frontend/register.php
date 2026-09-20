@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         'password' => $password
     );
 
-    $register_url = "http://localhost:8000/api/auth/register";
+    $register_url = $API_BASE_URL . "/auth/register";
 
     try {
         $options = array(

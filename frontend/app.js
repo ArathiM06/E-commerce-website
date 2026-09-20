@@ -1,5 +1,5 @@
 // app.js - script file for cart and api functions
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = window.API_BASE_URL || 'http://127.0.0.1:8000/api';
 
 // toast popup manager
 function showToast(message, type = 'success') {
@@ -37,7 +37,7 @@ function getCart() {
     try {
         let data = localStorage.getItem('cusat_cart');
         if (data == null) {
-            return array(); // returning empty array
+            return []; // returning empty array
         }
         return JSON.parse(data) || [];
     } catch(err) {
@@ -284,14 +284,16 @@ async function handleCheckout(event) {
         }
 
         const orderResult = await response.json();
-        clearCart();
 
         // simple link redirect mapping
-        window.location.href = 'cart.php?success=1' +
+        const redirectUrl = 'cart.php?success=1' +
             '&order_id=' + orderResult.id +
             '&name=' + encodeURIComponent(orderResult.customer_name) +
             '&total=' + orderResult.total_amount +
             '&date=' + encodeURIComponent(orderResult.created_at);
+
+        clearCart();
+        window.location.href = redirectUrl;
 
     } catch (error) {
         showToast(error.message, 'error');

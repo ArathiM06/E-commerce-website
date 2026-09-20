@@ -1,13 +1,19 @@
+import os
 from pymongo import MongoClient, ReturnDocument
 
-# MongoDB Connection URL
-MONGODB_URL = "mongodb://localhost:27017"
+# MongoDB Connection URL (supports cloud MongoDB Atlas via MONGODB_URL env var)
+MONGODB_URL = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
 
 # Create MongoClient
 client = MongoClient(MONGODB_URL)
 
 # Access database 'cusat_store'
-db = client["cusat_store"]
+try:
+    db = client.get_default_database()
+    if db is None:
+        db = client["cusat_store"]
+except Exception:
+    db = client["cusat_store"]
 
 def get_next_sequence_value(sequence_name: str) -> int:
     """
@@ -23,9 +29,13 @@ def get_next_sequence_value(sequence_name: str) -> int:
 
 def init_db():
     """
-    Initialize database indexes.
+    Initialize database indexes safely without crashing the server if DB is connecting.
     """
-    db.users.create_index("email", unique=True)
+    try:
+        db.users.create_index("email", unique=True)
+        print("Database indexes initialized successfully.")
+    except Exception as e:
+        print(f"Notice: MongoDB index initialization deferred or skipped: {e}")
 
 def get_db():
     """

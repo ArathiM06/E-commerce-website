@@ -14,7 +14,7 @@ $error_products_msg = null;
 $admin_token = $_SESSION['admin_token'];
 
 // fetch system customer logged order rows from core database via link api
-$orders_url = "http://localhost:8000/api/orders";
+$orders_url = $API_BASE_URL . "/orders";
 try {
     $options = array(
         'http' => array(
@@ -43,8 +43,8 @@ try {
     $error_orders_msg = "An error occurred while fetching orders.";
 }
 
-// pull current merchandise row items listings parameters catalog fields
-$products_url = "http://localhost:8000/api/products";
+// pull current merchandise row items listings param// fetch store catalog inventory list
+$products_url = $API_BASE_URL . "/products";
 try {
     $ctx = stream_context_create(['http' => ['timeout' => 3.0]]);
     $response = @file_get_contents($products_url, false, $ctx);

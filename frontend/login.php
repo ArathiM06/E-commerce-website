@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         'password' => $password
     );
 
-    $login_url = "http://localhost:8000/api/auth/login";
+    $login_url = $API_BASE_URL . "/auth/login";
     
     try {
         $options = array(

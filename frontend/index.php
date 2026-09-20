@@ -13,7 +13,7 @@ if (isset($_GET['search'])) {
 }
 
 // backend endpoint link stuff
-$api_url = "http://localhost:8000/api/products";
+$api_url = $API_BASE_URL . "/products";
 if ($selected_category != 'All') {
     $api_url = $api_url . "?category=" . urlencode($selected_category);
 }
@@ -56,13 +56,21 @@ $categories = array('All', 'Apparel', 'Textbooks', 'Tech', 'Stationery');
 <main class="container page-main">
     
     <div class="hero">
-        <span class="hero-tag">OFFICIAL STORE</span>
-        <br><br>
-        <h1 class="hero-title">Wear Your Pride, Learn in Style</h1>
-        <br>
-        <p class="hero-subtitle">Get official Cochin University merchandise, textbooks, stationery, and lab essentials. Designed for CUSATians, by CUSATians.</p>
-        <br><br>
-        <a href="#store-section" class="hero-btn">Shop Collection ↓</a>
+        <div class="hero-bg-slide slide-1"></div>
+        <div class="hero-bg-slide slide-2"></div>
+        <div class="hero-container-inner">
+            <div class="hero-text-side">
+                <span class="hero-tag">OFFICIAL STORE</span>
+                <h1 class="hero-title">Wear Your Pride, Learn in Style</h1>
+                <p class="hero-subtitle">Get official Cochin University merchandise, textbooks, stationery, and lab essentials. Designed for CUSATians, by CUSATians.</p>
+                <a href="#store-section" class="hero-btn">Shop Collection</a>
+            </div>
+            <div class="hero-image-side">
+                <div class="admin-card">
+                    <img src="assets/cusat_admin_cropped.png" alt="CUSAT Administrative Center" class="admin-card-img">
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="store-section" class="store-filter-bar">
