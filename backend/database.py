@@ -1,11 +1,15 @@
 import os
+import certifi
 from pymongo import MongoClient, ReturnDocument
 
 # MongoDB Connection URL (supports cloud MongoDB Atlas via MONGODB_URL env var)
 MONGODB_URL = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
 
-# Create MongoClient
-client = MongoClient(MONGODB_URL)
+# Create MongoClient with TLS certificate verification
+if "mongodb+srv://" in MONGODB_URL:
+    client = MongoClient(MONGODB_URL, tlsCAFile=certifi.where())
+else:
+    client = MongoClient(MONGODB_URL)
 
 # Access database 'cusat_store'
 try:
