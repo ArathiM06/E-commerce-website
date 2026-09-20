@@ -30,14 +30,14 @@ try {
     } else {
         $products = json_decode($response, true);
         
-        if ($products === null || !is_array($products)) {
-            $backend_offline = true;
+        if ($products === null || !is_array($products) || isset($products['detail'])) {
+            $products = array();
         } else {
             // filter array if user typed search query
             if ($search_query != '') {
                 $filtered = array();
                 foreach ($products as $p) {
-                    if (stristr($p['name'], $search_query) == true || stristr($p['description'], $search_query) == true) {
+                    if (isset($p['name']) && (stristr($p['name'], $search_query) == true || (isset($p['description']) && stristr($p['description'], $search_query) == true))) {
                         $filtered[] = $p;
                     }
                 }
@@ -153,7 +153,7 @@ $categories = array('All', 'Apparel', 'Textbooks', 'Tech', 'Stationery');
                             <table width="100%">
                                 <tr>
                                     <td>
-                                        <b class="catalog-product-price">₹<?php echo number_format($prod['price'], 2); ?></b>
+                                        <b class="catalog-product-price">₹<?php echo number_format(floatval($prod['price'] ?? 0), 2); ?></b>
                                     </td>
                                     <td align="right">
                                         <button onclick="addToCart(<?php echo $prod['id']; ?>, '<?php echo addslashes($prod['name']); ?>', <?php echo $prod['price']; ?>, '<?php echo addslashes($prod['image_url']); ?>')" 

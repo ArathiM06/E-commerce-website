@@ -1,7 +1,17 @@
 <?php
 // Central API Configuration
-// Points directly to the live Render backend
-$API_BASE_URL = getenv('API_BASE_URL') ?: (isset($_SERVER['API_BASE_URL']) ? $_SERVER['API_BASE_URL'] : 'https://cusat-store-backend.onrender.com/api');
+$raw_url = getenv('API_BASE_URL') ?: (isset($_SERVER['API_BASE_URL']) ? $_SERVER['API_BASE_URL'] : 'https://cusat-store-backend.onrender.com/api');
+
+// Clean up whitespace & trailing slashes
+$raw_url = trim($raw_url);
+$raw_url = rtrim($raw_url, '/');
+
+// Ensure /api is at the end of the base URL
+if (!preg_match('#/api$#i', $raw_url)) {
+    $raw_url .= '/api';
+}
+
+$API_BASE_URL = $raw_url;
 
 function api_get($url) {
     if (function_exists('curl_init')) {
@@ -13,8 +23,9 @@ function api_get($url) {
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         $result = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
-        if ($result !== false && !empty($result)) {
+        if ($result !== false && !empty($result) && $http_code >= 200 && $http_code < 400) {
             return $result;
         }
     }
@@ -29,5 +40,9 @@ function api_get($url) {
             'verify_peer_name' => false,
         ]
     ]);
-    return @file_get_contents($url, false, $ctx);
+    $result = @file_get_contents($url, false, $ctx);
+    if ($result !== false) {
+        return $result;
+    }
+    return false;
 }
