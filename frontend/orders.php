@@ -14,12 +14,7 @@ $error_msg = null;
 $api_url = $API_BASE_URL . "/orders/user/" . urlencode($user_id);
 
 try {
-    $ctx = stream_context_create(array(
-        'http' => array(
-            'timeout' => 3.0
-        )
-    ));
-    $response = @file_get_contents($api_url, false, $ctx);
+    $response = api_get($api_url);
     
     if ($response == false) {
         $error_msg = "Could not fetch your order history. Make sure the FastAPI backend is running.";

@@ -23,27 +23,26 @@ $backend_offline = false;
 
 // fetching data from fastapi
 try {
-    $ctx = stream_context_create(array(
-        'http' => array(
-            'timeout' => 2.0
-        )
-    ));
-    $response = @file_get_contents($api_url, false, $ctx);
+    $response = api_get($api_url);
     
     if ($response == false) {
         $backend_offline = true;
     } else {
         $products = json_decode($response, true);
         
-        // filter array if user typed search query
-        if ($search_query != '') {
-            $filtered = array();
-            foreach ($products as $p) {
-                if (stristr($p['name'], $search_query) == true || stristr($p['description'], $search_query) == true) {
-                    $filtered[] = $p;
+        if ($products === null || !is_array($products)) {
+            $backend_offline = true;
+        } else {
+            // filter array if user typed search query
+            if ($search_query != '') {
+                $filtered = array();
+                foreach ($products as $p) {
+                    if (stristr($p['name'], $search_query) == true || stristr($p['description'], $search_query) == true) {
+                        $filtered[] = $p;
+                    }
                 }
+                $products = $filtered;
             }
-            $products = $filtered;
         }
     }
 } catch (Exception $e) {
