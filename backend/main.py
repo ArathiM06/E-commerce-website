@@ -167,6 +167,13 @@ def login(user: UserLogin, db = Depends(get_db)):
 
 @app.get("/api/products")
 def get_products(category: Optional[str] = None, db = Depends(get_db)):
+    # If products collection is empty, automatically seed initial products
+    try:
+        if db.products.count_documents({}) == 0:
+            seed_products(db)
+    except Exception as e:
+        print(f"Notice: Auto-seed check skipped: {e}")
+
     query = {}
     if category and category != "All":
         query["category"] = category
@@ -176,6 +183,14 @@ def get_products(category: Optional[str] = None, db = Depends(get_db)):
     for p in products:
         p["id"] = p.pop("_id")
     return products
+
+@app.post("/api/seed")
+def trigger_seed(db = Depends(get_db)):
+    """Manual endpoint to seed products anytime."""
+    seed_products(db)
+    count = db.products.count_documents({})
+    return {"status": "ok", "message": f"Database seeded with {count} products"}
+
 
 @app.post("/api/products")
 def create_product(product: ProductCreate, x_admin_token: Optional[str] = Header(None), db = Depends(get_db)):

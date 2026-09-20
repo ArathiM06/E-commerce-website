@@ -18,6 +18,7 @@ $is_admin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == true;
     <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
     <script>
         window.API_BASE_URL = "<?php echo htmlspecialchars($API_BASE_URL); ?>";
+        window.CURRENT_USER_ID = "<?php echo $user_id ? htmlspecialchars($user_id) : 'guest'; ?>";
     </script>
 </head>
 <body>

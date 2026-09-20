@@ -32,10 +32,20 @@ function showToast(message, type = 'success') {
     }, 3000);
 }
 
+// user-scoped cart key helper (each user has their own independent cart)
+function getCartKey() {
+    const uid = window.CURRENT_USER_ID;
+    if (uid && uid !== 'guest' && uid !== '') {
+        return 'cusat_cart_user_' + uid;
+    }
+    return 'cusat_cart_guest';
+}
+
 // local storage read helper
 function getCart() {
     try {
-        let data = localStorage.getItem('cusat_cart');
+        const key = getCartKey();
+        let data = localStorage.getItem(key);
         if (data == null) {
             return []; // returning empty array
         }
@@ -47,7 +57,7 @@ function getCart() {
 
 // local storage save helper
 function saveCart(cart) {
-    localStorage.setItem('cusat_cart', JSON.stringify(cart));
+    localStorage.setItem(getCartKey(), JSON.stringify(cart));
     updateCartBadge();
 }
 
@@ -127,6 +137,7 @@ function updateQuantity(productId, delta) {
 
 // clear function
 function clearCart() {
+    localStorage.removeItem(getCartKey());
     localStorage.removeItem('cusat_cart');
     updateCartBadge();
 }
