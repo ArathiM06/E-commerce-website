@@ -49,11 +49,11 @@ $fallback_products = array(
     ),
     array(
         "id" => 4,
-        "name" => "Lab Coat (White Cotton)",
-        "price" => 350.00,
+        "name" => "CUSAT Official Polo T-Shirt",
+        "price" => 499.00,
         "category" => "Apparel",
-        "description" => "Full-sleeve protective white lab coat made of breathable cotton blend. Required for Chemistry & Physics labs.",
-        "image_url" => "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=400"
+        "description" => "Premium navy blue polo t-shirt with official CUSAT crest embroidery and collar trim. Made of breathable cotton pique fabric.",
+        "image_url" => "https://images.unsplash.com/photo-1581655353564-df123a1eb820?auto=format&fit=crop&q=80&w=400"
     ),
     array(
         "id" => 5,
@@ -70,6 +70,54 @@ $fallback_products = array(
         "category" => "Stationery",
         "description" => "Durable wooden engineering drawing board along with a precise 60cm T-Square rule. Essential for Engineering Graphics.",
         "image_url" => "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?auto=format&fit=crop&q=80&w=400"
+    ),
+    array(
+        "id" => 7,
+        "name" => "CUSAT Insulated Stainless Steel Flask",
+        "price" => 349.00,
+        "category" => "Accessories",
+        "description" => "Double-wall insulated 750ml stainless steel flask with laser-engraved CUSAT logo. Keeps beverages cold or hot for 12 hours.",
+        "image_url" => "https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&q=80&w=400"
+    ),
+    array(
+        "id" => 8,
+        "name" => "CUSAT Official Campus Backpack",
+        "price" => 899.00,
+        "category" => "Apparel",
+        "description" => "Water-resistant navy blue backpack with padded laptop compartment, multiple organizers, and reflective CUSAT crest.",
+        "image_url" => "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=400"
+    ),
+    array(
+        "id" => 9,
+        "name" => "CUSAT Executive Pen & Notebook Set",
+        "price" => 299.00,
+        "category" => "Stationery",
+        "description" => "Hardbound A5 notebook with gold-embossed CUSAT logo paired with a sleek metallic rollerball pen.",
+        "image_url" => "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&q=80&w=400"
+    ),
+    array(
+        "id" => 10,
+        "name" => "Casio FX-991CW ClassWiz Scientific Calculator",
+        "price" => 1295.00,
+        "category" => "Tech",
+        "description" => "Advanced non-programmable scientific calculator prescribed for CUSAT B.Tech & Engineering examinations.",
+        "image_url" => "https://images.unsplash.com/photo-1611125832047-1d7ad1e8e48a?auto=format&fit=crop&q=80&w=400"
+    ),
+    array(
+        "id" => 11,
+        "name" => "CUSAT Varsity Baseball Cap",
+        "price" => 275.00,
+        "category" => "Apparel",
+        "description" => "Adjustable cotton twill cap in deep navy blue with 3D embroidered CUSAT lettering.",
+        "image_url" => "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&q=80&w=400"
+    ),
+    array(
+        "id" => 12,
+        "name" => "CUSAT Ceramic Heritage Coffee Mug",
+        "price" => 199.00,
+        "category" => "Accessories",
+        "description" => "Premium 350ml ceramic coffee mug featuring the official CUSAT motto and campus crest.",
+        "image_url" => "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=400"
     )
 );
 
@@ -117,7 +165,7 @@ if ($search_query != '') {
     $products = $filtered;
 }
 
-$categories = array('All', 'Apparel', 'Textbooks', 'Tech', 'Stationery');
+$categories = array('All', 'Apparel', 'Textbooks', 'Tech', 'Stationery', 'Accessories');
 ?>
 
 <main class="container page-main">
