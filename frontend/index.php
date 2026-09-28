@@ -101,7 +101,7 @@ $fallback_products = array(
         "price" => 1295.00,
         "category" => "Tech",
         "description" => "Advanced non-programmable scientific calculator prescribed for CUSAT B.Tech & Engineering examinations.",
-        "image_url" => "assets/casio_calc.png"
+        "image_url" => "https://images.unsplash.com/photo-1594980596870-8aa52a78d8cd?auto=format&fit=crop&q=80&w=400"
     ),
     array(
         "id" => 11,

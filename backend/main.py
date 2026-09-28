@@ -140,7 +140,7 @@ INITIAL_CATALOG_PRODUCTS = [
         "price": 1295.00,
         "category": "Tech",
         "description": "Advanced non-programmable scientific calculator prescribed for CUSAT B.Tech & Engineering examinations.",
-        "image_url": "assets/casio_calc.png"
+        "image_url": "https://images.unsplash.com/photo-1594980596870-8aa52a78d8cd?auto=format&fit=crop&q=80&w=400"
     },
     {
         "id": 11,
@@ -152,28 +152,30 @@ INITIAL_CATALOG_PRODUCTS = [
     }
 ]
 
-# Seed dynamic initial mock products if DB has missing catalog items
+# Seed dynamic initial mock products and keep DB strictly in sync
 def seed_products(db, force=False):
     try:
-        current_count = db.products.count_documents({})
-        if force or current_count < len(INITIAL_CATALOG_PRODUCTS):
-            for item in INITIAL_CATALOG_PRODUCTS:
-                prod_doc = {
-                    "_id": item["id"],
-                    "name": item["name"],
-                    "price": item["price"],
-                    "category": item["category"],
-                    "description": item["description"],
-                    "image_url": item["image_url"]
-                }
-                db.products.replace_one({"_id": item["id"]}, prod_doc, upsert=True)
-            # Update counter sequence value to avoid ID conflicts
-            db.counters.replace_one(
-                {"_id": "product_id"},
-                {"_id": "product_id", "sequence_value": max(12, current_count)},
-                upsert=True
-            )
-            print(f"Database sync completed with {len(INITIAL_CATALOG_PRODUCTS)} catalog products.")
+        valid_ids = [item["id"] for item in INITIAL_CATALOG_PRODUCTS]
+        # Clean up any removed items (e.g. Mug) from MongoDB database
+        db.products.delete_many({"_id": {"$nin": valid_ids}})
+
+        for item in INITIAL_CATALOG_PRODUCTS:
+            prod_doc = {
+                "_id": item["id"],
+                "name": item["name"],
+                "price": item["price"],
+                "category": item["category"],
+                "description": item["description"],
+                "image_url": item["image_url"]
+            }
+            db.products.replace_one({"_id": item["id"]}, prod_doc, upsert=True)
+
+        db.counters.replace_one(
+            {"_id": "product_id"},
+            {"_id": "product_id", "sequence_value": max(valid_ids)},
+            upsert=True
+        )
+        print(f"Database sync completed with {len(INITIAL_CATALOG_PRODUCTS)} catalog products.")
     except Exception as e:
         print(f"Notice: Product seeding skipped or deferred: {e}")
 
@@ -181,7 +183,7 @@ def seed_products(db, force=False):
 def on_startup():
     try:
         db = next(get_db())
-        seed_products(db)
+        seed_products(db, force=True)
     except Exception as e:
         print(f"Notice: Startup DB check skipped: {e}")
 
@@ -234,10 +236,9 @@ def login(user: UserLogin, db = Depends(get_db)):
 @app.get("/api/products")
 def get_products(category: Optional[str] = None, db = Depends(get_db)):
     try:
-        # Sync catalog if missing items
+        # Auto sync catalog on fetch
         try:
-            if db.products.count_documents({}) < len(INITIAL_CATALOG_PRODUCTS):
-                seed_products(db)
+            seed_products(db, force=True)
         except Exception:
             pass
 
