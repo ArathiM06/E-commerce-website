@@ -179,11 +179,29 @@ def seed_products(db, force=False):
     except Exception as e:
         print(f"Notice: Product seeding skipped or deferred: {e}")
 
+def seed_admin(db):
+    try:
+        admin_email = "admin@cusat.ac.in"
+        if not db.users.find_one({"email": admin_email}):
+            new_user_id = get_next_sequence_value("user_id")
+            admin_user = {
+                "_id": new_user_id,
+                "name": "CUSAT Store Admin",
+                "email": admin_email,
+                "password_hash": hash_password("admin123"),
+                "is_admin": True
+            }
+            db.users.insert_one(admin_user)
+            print("Default admin account created: admin@cusat.ac.in / admin123")
+    except Exception as e:
+        print(f"Notice: Admin seed skipped: {e}")
+
 @app.on_event("startup")
 def on_startup():
     try:
         db = next(get_db())
         seed_products(db, force=True)
+        seed_admin(db)
     except Exception as e:
         print(f"Notice: Startup DB check skipped: {e}")
 
@@ -236,9 +254,10 @@ def login(user: UserLogin, db = Depends(get_db)):
 @app.get("/api/products")
 def get_products(category: Optional[str] = None, db = Depends(get_db)):
     try:
-        # Auto sync catalog on fetch
+        # Auto sync catalog and admin on fetch
         try:
             seed_products(db, force=True)
+            seed_admin(db)
         except Exception:
             pass
 
