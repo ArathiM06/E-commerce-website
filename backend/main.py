@@ -140,7 +140,7 @@ INITIAL_CATALOG_PRODUCTS = [
         "price": 1295.00,
         "category": "Tech",
         "description": "Advanced non-programmable scientific calculator prescribed for CUSAT B.Tech & Engineering examinations.",
-        "image_url": "https://images.unsplash.com/photo-1611125832047-1d7ad1e8e48a?auto=format&fit=crop&q=80&w=400"
+        "image_url": "assets/casio_calc.png"
     },
     {
         "id": 11,
@@ -149,14 +149,6 @@ INITIAL_CATALOG_PRODUCTS = [
         "category": "Apparel",
         "description": "Adjustable cotton twill cap in deep navy blue with 3D embroidered CUSAT lettering.",
         "image_url": "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&q=80&w=400"
-    },
-    {
-        "id": 12,
-        "name": "CUSAT Ceramic Heritage Coffee Mug",
-        "price": 199.00,
-        "category": "Accessories",
-        "description": "Premium 350ml ceramic coffee mug featuring the official CUSAT motto and campus crest.",
-        "image_url": "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=400"
     }
 ]
 
