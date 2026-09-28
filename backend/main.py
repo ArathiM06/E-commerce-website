@@ -160,19 +160,28 @@ INITIAL_CATALOG_PRODUCTS = [
     }
 ]
 
-# Seed dynamic initial mock products if DB is empty
-def seed_products(db):
+# Seed dynamic initial mock products if DB has missing catalog items
+def seed_products(db, force=False):
     try:
-        if db.products.count_documents({}) == 0:
-            initial_products = []
+        current_count = db.products.count_documents({})
+        if force or current_count < len(INITIAL_CATALOG_PRODUCTS):
             for item in INITIAL_CATALOG_PRODUCTS:
-                doc = dict(item)
-                doc["_id"] = get_next_sequence_value("product_id")
-                if "id" in doc:
-                    del doc["id"]
-                initial_products.append(doc)
-            db.products.insert_many(initial_products)
-            print("Database seeded with initial products.")
+                prod_doc = {
+                    "_id": item["id"],
+                    "name": item["name"],
+                    "price": item["price"],
+                    "category": item["category"],
+                    "description": item["description"],
+                    "image_url": item["image_url"]
+                }
+                db.products.replace_one({"_id": item["id"]}, prod_doc, upsert=True)
+            # Update counter sequence value to avoid ID conflicts
+            db.counters.replace_one(
+                {"_id": "product_id"},
+                {"_id": "product_id", "sequence_value": max(12, current_count)},
+                upsert=True
+            )
+            print(f"Database sync completed with {len(INITIAL_CATALOG_PRODUCTS)} catalog products.")
     except Exception as e:
         print(f"Notice: Product seeding skipped or deferred: {e}")
 
@@ -233,9 +242,9 @@ def login(user: UserLogin, db = Depends(get_db)):
 @app.get("/api/products")
 def get_products(category: Optional[str] = None, db = Depends(get_db)):
     try:
-        # Auto seed if empty
+        # Sync catalog if missing items
         try:
-            if db.products.count_documents({}) == 0:
+            if db.products.count_documents({}) < len(INITIAL_CATALOG_PRODUCTS):
                 seed_products(db)
         except Exception:
             pass
@@ -260,8 +269,8 @@ def get_products(category: Optional[str] = None, db = Depends(get_db)):
 
 @app.post("/api/seed")
 def trigger_seed(db = Depends(get_db)):
-    """Manual endpoint to seed products anytime."""
-    seed_products(db)
+    """Manual endpoint to seed/sync products anytime."""
+    seed_products(db, force=True)
     try:
         count = db.products.count_documents({})
     except Exception:
