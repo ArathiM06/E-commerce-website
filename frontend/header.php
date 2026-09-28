@@ -27,6 +27,39 @@ $is_admin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == true;
 <body>
 <div id="toast-container"></div>
 
+<!-- Global Product Detail Modal Popup -->
+<div id="product-detail-modal" class="modal-overlay" onclick="closeProductModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <button class="modal-close-btn" onclick="closeProductModal()" aria-label="Close modal">&times;</button>
+        <div class="modal-grid">
+            <div class="modal-img-wrapper">
+                <span id="modal-category-badge" class="product-card-category-badge">Category</span>
+                <img id="modal-product-img" src="" alt="Product Image" class="modal-product-img">
+            </div>
+            <div class="modal-details-side">
+                <h2 id="modal-product-title" class="modal-product-title">Product Title</h2>
+                <div class="modal-price-row">
+                    <b id="modal-product-price" class="modal-product-price">₹0.00</b>
+                </div>
+                <div class="modal-description-box">
+                    <h4>About this item</h4>
+                    <p id="modal-product-desc" class="modal-product-desc">Full detailed description of the product...</p>
+                </div>
+                <div class="modal-actions-row">
+                    <div class="modal-quantity-picker">
+                        <button type="button" class="qty-btn" onclick="adjustModalQty(-1)">-</button>
+                        <span id="modal-qty-val" class="qty-val">1</span>
+                        <button type="button" class="qty-btn" onclick="adjustModalQty(1)">+</button>
+                    </div>
+                    <button id="modal-add-to-cart-btn" class="add-to-cart-action-btn modal-add-btn">
+                        Add to Cart 🛒
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <header class="main-header">
     <div class="header-container">
         

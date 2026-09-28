@@ -185,8 +185,15 @@ $categories = array('All', 'Apparel', 'Textbooks', 'Tech', 'Stationery');
     <?php } else { ?>
         
         <div class="products-grid" id="main-products-grid">
-            <?php foreach ($products as $prod) { ?>
-                <div class="product-card">
+            <?php foreach ($products as $prod) { 
+                $safe_id = intval($prod['id']);
+                $safe_name = htmlspecialchars(addslashes($prod['name']), ENT_QUOTES);
+                $safe_price = floatval($prod['price'] ?? 0);
+                $safe_cat = htmlspecialchars(addslashes($prod['category'] ?? 'General'), ENT_QUOTES);
+                $safe_desc = htmlspecialchars(addslashes(preg_replace("/\r|\n/", " ", $prod['description'] ?? '')), ENT_QUOTES);
+                $safe_img = htmlspecialchars(addslashes($prod['image_url'] ?? ''), ENT_QUOTES);
+            ?>
+                <div class="product-card" onclick="openProductModal(<?php echo $safe_id; ?>, '<?php echo $safe_name; ?>', <?php echo $safe_price; ?>, '<?php echo $safe_cat; ?>', '<?php echo $safe_desc; ?>', '<?php echo $safe_img; ?>')">
                     <div class="product-image-box">
                         <span class="product-card-category-badge">
                             <?php echo htmlspecialchars($prod['category']); ?>
@@ -201,7 +208,7 @@ $categories = array('All', 'Apparel', 'Textbooks', 'Tech', 'Stationery');
                     
                     <div class="product-card-footer">
                         <b class="catalog-product-price">₹<?php echo number_format(floatval($prod['price'] ?? 0), 2); ?></b>
-                        <button onclick="addToCart(<?php echo $prod['id']; ?>, '<?php echo addslashes($prod['name']); ?>', <?php echo $prod['price']; ?>, '<?php echo addslashes($prod['image_url']); ?>')" 
+                        <button onclick="event.stopPropagation(); addToCart(<?php echo $prod['id']; ?>, '<?php echo addslashes($prod['name']); ?>', <?php echo $prod['price']; ?>, '<?php echo addslashes($prod['image_url']); ?>')" 
                                 class="add-to-cart-action-btn">
                             Add to Cart 🛒
                         </button>

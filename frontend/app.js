@@ -416,6 +416,72 @@ async function handleAddProduct(event, adminToken) {
     }
 }
 
+// Product Detail Modal Popup Manager
+let currentModalProduct = null;
+let currentModalQty = 1;
+
+function openProductModal(id, name, price, category, description, imageUrl) {
+    currentModalProduct = { id: id, name: name, price: price, category: category, description: description, imageUrl: imageUrl };
+    currentModalQty = 1;
+
+    const titleEl = document.getElementById('modal-product-title');
+    const catEl = document.getElementById('modal-category-badge');
+    const imgEl = document.getElementById('modal-product-img');
+    const priceEl = document.getElementById('modal-product-price');
+    const descEl = document.getElementById('modal-product-desc');
+    const qtyEl = document.getElementById('modal-qty-val');
+    const addBtn = document.getElementById('modal-add-to-cart-btn');
+
+    if (titleEl) titleEl.textContent = name;
+    if (catEl) catEl.textContent = category || 'General';
+    if (imgEl) {
+        imgEl.src = imageUrl;
+        imgEl.alt = name;
+    }
+    if (priceEl) priceEl.textContent = '₹' + parseFloat(price || 0).toFixed(2);
+    if (descEl) descEl.textContent = description || 'No detailed description available.';
+    if (qtyEl) qtyEl.textContent = '1';
+
+    if (addBtn) {
+        addBtn.onclick = function() {
+            for (let i = 0; i < currentModalQty; i++) {
+                addToCart(id, name, price, imageUrl);
+            }
+            closeProductModal();
+        };
+    }
+
+    const modal = document.getElementById('product-detail-modal');
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function adjustModalQty(delta) {
+    currentModalQty = Math.max(1, currentModalQty + delta);
+    const qtyEl = document.getElementById('modal-qty-val');
+    if (qtyEl) qtyEl.textContent = currentModalQty;
+}
+
+function closeProductModal(event) {
+    if (event && event.target && event.target !== event.currentTarget && !event.target.classList.contains('modal-close-btn')) {
+        return;
+    }
+    const modal = document.getElementById('product-detail-modal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+// Close modal on Escape key press
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeProductModal();
+    }
+});
+
 // background polling for Render backend cold-start auto recovery
 async function autoConnectBackend() {
     const banner = document.getElementById('backend-status-banner');
@@ -432,10 +498,13 @@ async function autoConnectBackend() {
                     let html = '';
                     data.forEach(prod => {
                         const priceFormatted = parseFloat(prod.price || 0).toFixed(2);
-                        const safeName = (prod.name || '').replace(/'/g, "\\'");
-                        const safeImg = (prod.image_url || '').replace(/'/g, "\\'");
+                        const safeName = (prod.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                        const safeCat = (prod.category || 'General').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                        const safeDesc = (prod.description || '').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\r?\n|\r/g, " ");
+                        const safeImg = (prod.image_url || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
                         html += `
-                        <div class="product-card">
+                        <div class="product-card" onclick="openProductModal(${prod.id}, '${safeName}', ${prod.price}, '${safeCat}', '${safeDesc}', '${safeImg}')">
                             <div class="product-image-box">
                                 <span class="product-card-category-badge">${prod.category || 'General'}</span>
                                 <img src="${prod.image_url}" alt="${prod.name}" class="catalog-product-img">
@@ -446,7 +515,7 @@ async function autoConnectBackend() {
                             </div>
                             <div class="product-card-footer">
                                 <b class="catalog-product-price">₹${priceFormatted}</b>
-                                <button onclick="addToCart(${prod.id}, '${safeName}', ${prod.price}, '${safeImg}')" class="add-to-cart-action-btn">
+                                <button onclick="event.stopPropagation(); addToCart(${prod.id}, '${safeName}', ${prod.price}, '${safeImg}')" class="add-to-cart-action-btn">
                                     Add to Cart 🛒
                                 </button>
                             </div>
